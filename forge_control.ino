@@ -53,6 +53,7 @@ double Kd = 0.0;
 
 // ── Internal variables — do not edit below this line ─────────────────────────
 double currentTemp    = 0.0;
+double lastTemp       = 0.0;
 double rampedSetpoint = 0.0;
 double targetSetpoint = 0.0;
 bool   relayState     = false;
@@ -60,6 +61,9 @@ bool   relayState     = false;
 unsigned long lastRampUpdate = 0;
 unsigned long lastPrint      = 0;
 bool heatingUp = true; // true = heating, false = cooling
+
+void printStatusNow();
+double printStatusNow(unsigned long diff, double lastTemp);
 
 Adafruit_MAX31856 thermocouple = Adafruit_MAX31856(CS_PIN);
 AutoPIDRelay furnacePID(&currentTemp, &rampedSetpoint, &relayState,
@@ -87,12 +91,14 @@ void setup() {
     t = thermocouple.readThermocoupleTemperature();
   }
   currentTemp    = t;
+  lastTemp       = t;
   rampedSetpoint = t;
   targetSetpoint = t;
 
   furnacePID.setTimeStep(1000);
   furnacePID.stop(); // don't run until user sends a command
 
+  Serial.print("Welcome!");
   Serial.print("Ready. Temperature: ");
   Serial.print(currentTemp, 1);
   Serial.println(" C");
@@ -220,15 +226,22 @@ void handleSerial() {
 
 // ── Status ────────────────────────────────────────────────────────────────────
 void printStatus() {
-  if (millis() - lastPrint < 2000) return;
+  unsigned long diff = millis() - lastPrint;
+  if (diff < 2000) return;
   lastPrint = millis();
-  printStatusNow();
+  lastTemp = printStatusNow(diff, lastTemp);
 }
 
 void printStatusNow() {
+  printStatusNow(millis() - lastPrint, lastTemp);
+}
+
+double printStatusNow(unsigned long diff, double lastTemp) {
   Serial.print("Temp: ");    Serial.print(currentTemp, 1);    Serial.print(" C | ");
   Serial.print("RampSP: ");  Serial.print(rampedSetpoint, 1); Serial.print(" C | ");
   Serial.print("Target: ");  Serial.print(targetSetpoint, 1); Serial.print(" C | ");
-  Serial.print("SSR: ");     Serial.print(relayState ? "ON" : "OFF");
+  Serial.print("SSR: ");     Serial.print(relayState ? "ON" : "OFF"); Serial.print(" | ");
+  Serial.print("Rate: ");    Serial.print((currentTemp - lastTemp) / (double)diff * 60000.0, 1); Serial.print(" C/minute | ");
   Serial.println();
+  return currentTemp;
 }
