@@ -40,7 +40,7 @@
 #define SSR_PIN  5
 
 // ── Settings — adjust these for your furnace ─────────────────────────────────
-const double RAMP_PER_MIN   = 20.0;   // max °C per minute, heating or cooling
+const double RAMP_PER_MIN   = 12.0;   // max °C per minute, heating or cooling
 const double ROOM_TEMP      = 25.0;   // target when COOL is sent
 const double MAX_SAFE_TEMP  = 1100.0; // SSR cut if temp exceeds this
 
