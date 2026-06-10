@@ -98,7 +98,7 @@ void setup() {
   furnacePID.setTimeStep(1000);
   furnacePID.stop(); // don't run until user sends a command
 
-  Serial.print("Welcome!");
+  Serial.println("Welcome!");
   Serial.print("Ready. Temperature: ");
   Serial.print(currentTemp, 1);
   Serial.println(" C");
