@@ -240,8 +240,8 @@ double printStatusNow(unsigned long diff, double lastTemp) {
   Serial.print("Temp: ");    Serial.print(currentTemp, 1);    Serial.print(" C | ");
   Serial.print("RampSP: ");  Serial.print(rampedSetpoint, 1); Serial.print(" C | ");
   Serial.print("Target: ");  Serial.print(targetSetpoint, 1); Serial.print(" C | ");
-  Serial.print("SSR: ");     Serial.print(relayState ? "ON" : "OFF"); Serial.print(" | ");
-  Serial.print("Rate: ");    Serial.print((currentTemp - lastTemp) / (double)diff * 60000.0, 1); Serial.print(" C/minute | ");
+  Serial.print("SSR: ");     Serial.print(relayState ? "ON " : "OFF"); Serial.print(" | ");
+  Serial.print("Rate: ");    Serial.print((currentTemp - lastTemp) / (double)diff * 60000.0, 1); Serial.print(" C/min ");
   Serial.println();
   return currentTemp;
 }
